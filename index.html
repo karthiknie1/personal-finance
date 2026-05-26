@@ -15,6 +15,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 0.85rem;
             min-height: 100vh;
             background-color: #f5f5f5;
         }
@@ -85,9 +86,7 @@
         .goals-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
             gap: 1rem;
-            min-height: calc(100vh - 120px);
         }
 
         .goal-section {
@@ -330,13 +329,14 @@
         }
 
         .vpf-info {
-            background-color: #e8f5e9;
+            background-color: #e8eaf6;
             padding: 0.75rem 1rem;
             border-radius: 4px;
             margin-bottom: 1.5rem;
-            font-size: 0.85rem;
-            color: #2e7d32;
-            border-left: 4px solid #2e7d32;
+            font-size: 0.75rem;
+            color: #1a1a2e;
+            border-left: 4px solid #1a1a2e;
+            font-weight: 700;
         }
 
         .vpf-form {
@@ -363,7 +363,7 @@
             padding: 0.5rem 0.75rem;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-family: inherit;
         }
 
@@ -381,12 +381,13 @@
             width: 100%;
             min-width: auto;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .vpf-table td {
             padding: 0.6rem 0.75rem;
             border-bottom: 1px solid #eee;
+            font-size: 0.85rem;
         }
 
         .vpf-table td:first-child {
@@ -444,7 +445,7 @@
             padding: 0.7rem 1.5rem;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 600;
             transition: background-color 0.2s;
         }
@@ -468,15 +469,15 @@
         }
 
         .risk-label {
-            font-size: 1.1rem !important;
+            font-size: 0.9rem !important;
             font-weight: 700 !important;
             color: #1a1a2e !important;
         }
 
         .risk-select {
             width: 100%;
-            padding: 0.7rem 1rem !important;
-            font-size: 1.05rem !important;
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.85rem !important;
             font-weight: 600;
             border: 2px solid #4e79a7 !important;
             border-radius: 6px !important;
@@ -519,17 +520,22 @@
     </header>
 
     <nav class="sidebar">
-        <a href="#" class="active-nav" onclick="showPage('investment-overview', this)">Investment Overview</a>
+        <a href="#" class="active-nav" onclick="showPage('investment-overview', this)">Goal Based Investing</a>
         <a href="#" onclick="showPage('vpf-calculator', this)">VPF % Calculator</a>
         <a href="#" onclick="showPage('retirement-corpus', this)">Retirement Corpus</a>
         <a href="#" onclick="showPage('epf-calculator', this)">EPF Calculator</a>
         <a href="#" onclick="showPage('home-loan', this)">Home Loan Calculator</a>
+        <a href="#" onclick="showPage('inflated-value', this)">Inflated Value Calculator</a>
     </nav>
 
     <main>
-        <!-- Investment Overview Page -->
+        <!-- Goal Based Investing Page -->
         <div class="page active" id="investment-overview">
-            <h2 class="section-title">Investment Overview</h2>
+            <h2 class="section-title">Goal Based Investing</h2>
+
+            <div class="vpf-info">
+                <p><strong>Note:</strong> Your data is saved locally on this browser and will clear if you use a new browser or wipe history. Use the download and upload tools to back up your data and restore it anytime.</p>
+            </div>
 
             <div class="export-import-bar">
                 <button class="btn-export" onclick="exportData()">Export Data</button>
@@ -538,134 +544,12 @@
                 <button class="btn-reset" onclick="resetData()">Reset</button>
             </div>
 
-            <div class="goals-container">
-                <!-- Top-Left: Retirement -->
-                <div class="goal-section">
-                    <div class="goal-title">Financial Goal: Retirement</div>
+            <div style="margin-bottom:1rem;">
+                <button class="btn-add-row" onclick="addNewGoal()">+ Add New Financial Goal</button>
+                <span style="font-size:0.8rem; color:#555; margin-left:0.5rem; font-weight:700;">(click to add more goals)</span>
+            </div>
 
-                    <div class="table-container">
-                        <table id="retirement-table">
-                            <colgroup>
-                                <col class="col-seq">
-                                <col class="col-asset">
-                                <col class="col-amount">
-                                <col class="col-method">
-                                <col class="col-freq">
-                                <col class="col-instrument">
-                                <col class="col-yearly">
-                                <col class="col-returns">
-                                <col class="col-stepup">
-                                <col class="col-horizon">
-                                <col class="col-total-cr">
-                                <col class="col-action">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Seq</th>
-                                    <th>Asset Class</th>
-                                    <th>Amount (INR)</th>
-                                    <th>Method</th>
-                                    <th>Frequency</th>
-                                    <th>Instrument</th>
-                                    <th>Yearly Contribution</th>
-                                    <th>Post Tax Returns%</th>
-                                    <th>Step Up%</th>
-                                    <th>Horizon (Yrs)</th>
-                                    <th>Total in CR</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="retirement-tbody">
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td><strong>Total</strong></td>
-                                    <td><strong id="retirement-total">&#8377; 0.00</strong></td>
-                                    <td colspan="3"></td>
-                                    <td><strong id="retirement-yearly-total"></strong></td>
-                                    <td colspan="3"></td>
-                                    <td><strong id="retirement-cr-total"></strong></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <button class="btn-add-row" onclick="addRow('retirement-tbody')">+ Add Row</button>
-                </div>
-
-                <!-- Top-Right: Retirement Pie Chart -->
-                <div class="block-empty chart-block">
-                    <div class="goal-title">Retirement - Asset Allocation</div>
-                    <div class="chart-wrapper">
-                        <canvas id="retirement-chart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Bottom-Left: Child's Education -->
-                <div class="goal-section">
-                    <div class="goal-title">Financial Goal: Child's Education</div>
-
-                    <div class="table-container">
-                        <table id="education-table">
-                            <colgroup>
-                                <col class="col-seq">
-                                <col class="col-asset">
-                                <col class="col-amount">
-                                <col class="col-method">
-                                <col class="col-freq">
-                                <col class="col-instrument">
-                                <col class="col-yearly">
-                                <col class="col-returns">
-                                <col class="col-stepup">
-                                <col class="col-horizon">
-                                <col class="col-total-cr">
-                                <col class="col-action">
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th>Seq</th>
-                                    <th>Asset Class</th>
-                                    <th>Amount (INR)</th>
-                                    <th>Method</th>
-                                    <th>Frequency</th>
-                                    <th>Instrument</th>
-                                    <th>Yearly Contribution</th>
-                                    <th>Post Tax Returns%</th>
-                                    <th>Step Up%</th>
-                                    <th>Horizon (Yrs)</th>
-                                    <th>Total in CR</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="education-tbody">
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td><strong>Total</strong></td>
-                                    <td><strong id="education-total">&#8377; 0.00</strong></td>
-                                    <td colspan="3"></td>
-                                    <td><strong id="education-yearly-total"></strong></td>
-                                    <td colspan="3"></td>
-                                    <td><strong id="education-cr-total"></strong></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <button class="btn-add-row" onclick="addRow('education-tbody')">+ Add Row</button>
-                </div>
-
-                <!-- Bottom-Right: Education Pie Chart -->
-                <div class="block-empty chart-block">
-                    <div class="goal-title">Child's Education - Asset Allocation</div>
-                    <div class="chart-wrapper">
-                        <canvas id="education-chart"></canvas>
-                    </div>
-                </div>
+            <div class="goals-container" id="goals-container">
             </div>
         </div>
 
@@ -675,12 +559,12 @@
 
             <div class="vpf-container">
                 <div class="vpf-info">
-                    <p><strong>Rule:</strong> Employee EPF contribution = 12% of Basic Salary. EPF + VPF combined should not exceed ₹2,50,000/year for tax-free interest.</p>
+                    <p><strong>Rule:</strong> Employee EPF contribution = 12% of Basic Salary. EPF + VPF combined should not exceed ₹2,50,000/year for tax-free interest. This will calculate what should be the VPF % allocation.</p>
                 </div>
 
                 <div class="vpf-form">
                     <div class="vpf-field">
-                        <label>Monthly Basic Salary (₹)</label>
+                        <label>Monthly Basic Salary (&#8377;)</label>
                         <input type="number" id="vpf-basic" step="1" min="0" placeholder="Enter monthly basic salary" oninput="calcVPF()">
                     </div>
 
@@ -700,7 +584,7 @@
                             </tr>
                             <tr>
                                 <td>Tax-Free Limit (EPF + VPF)</td>
-                                <td>₹ 2,50,000</td>
+                                <td>&#8377; 2,50,000</td>
                             </tr>
                             <tr class="vpf-highlight">
                                 <td>Maximum VPF per Year</td>
@@ -728,26 +612,36 @@
                 <!-- Left Block: Calculator -->
                 <div class="rc-block">
                     <div class="vpf-info">
-                        <p><strong>Note:</strong> This calculates the corpus required at retirement, adjusted for inflation. It estimates how much you need to maintain your current expenses post-retirement.</p>
+                        <p><strong>Note:</strong> This calculates the corpus required at retirement, adjusted for inflation. It estimates how much you need to maintain your current expenses post-retirement. Considered same inflation percentage post-retirement.</p>
                     </div>
 
                     <div class="vpf-form">
                         <div class="vpf-field">
                             <label>Current Age</label>
-                            <input type="number" id="rc-age" step="1" min="18" max="100" placeholder="Enter current age" oninput="calcCorpus()">
+                            <input type="number" id="rc-age" step="1" min="18" max="100" placeholder="Enter current age">
                         </div>
                         <div class="vpf-field">
-                            <label>Yearly Expense (₹) <span class="info-icon" title="Info">ℹ</span></label>
-                            <input type="number" id="rc-expense" step="1" min="0" placeholder="Enter current yearly expense" oninput="calcCorpus()">
+                            <label>Yearly Expense (&#8377;) <span class="info-icon" title="Info">&#8377;</span></label>
+                            <input type="number" id="rc-expense" step="1" min="0" placeholder="Enter current yearly expense">
                             <div class="field-info"><strong>For calculation, don't consider expense which is not required post-retirement. For Eg, children tuition fee, home loan [assuming it is paid before retirement]</strong></div>
                         </div>
                         <div class="vpf-field">
                             <label>Retirement Age</label>
-                            <input type="number" id="rc-retire-age" step="1" min="18" max="100" placeholder="Enter retirement age" oninput="calcCorpus()">
+                            <input type="number" id="rc-retire-age" step="1" min="18" max="100" placeholder="Enter retirement age">
                         </div>
                         <div class="vpf-field">
                             <label>Inflation (%)</label>
-                            <input type="number" id="rc-inflation" step="1" min="0" max="30" placeholder="Enter expected inflation %" oninput="calcCorpus()">
+                            <input type="number" id="rc-inflation" step="1" min="0" max="30" placeholder="Enter expected inflation %">
+                        </div>
+                        <div class="vpf-field">
+                            <label>Life Expectancy (Age)</label>
+                            <input type="number" id="rc-life-expectancy" step="1" min="0" max="100" placeholder="Life expectancy age">
+                            <div class="field-info"><strong>How much longer you will live from your retirement age. Value must be between retirement age and 100.</strong></div>
+                        </div>
+
+                        <div class="epf-btn-bar">
+                            <button class="btn-calculate" onclick="calcCorpus()">Calculate</button>
+                            <button class="btn-reset" onclick="resetCorpus()">Reset</button>
                         </div>
 
                         <div class="vpf-results" id="rc-results" style="display:none;">
@@ -755,6 +649,10 @@
                                 <tr>
                                     <td>Years to Retirement</td>
                                     <td id="rc-years">-</td>
+                                </tr>
+                                <tr>
+                                    <td>Years in Retirement</td>
+                                    <td id="rc-retirement-years">-</td>
                                 </tr>
                                 <tr>
                                     <td>Current Yearly Expense</td>
@@ -765,7 +663,7 @@
                                     <td id="rc-inflated-annual">-</td>
                                 </tr>
                                 <tr class="vpf-highlight">
-                                    <td>Retirement Corpus Required (25x Annual)</td>
+                                    <td>Retirement Corpus Required (depletes at life expectancy)</td>
                                     <td id="rc-corpus">-</td>
                                 </tr>
                             </table>
@@ -773,9 +671,20 @@
                     </div>
                 </div>
 
-                <!-- Right Block: SIP Strategy -->
-                <div class="rc-block">
+                <!-- Right Block: Top - Depletion Chart -->
+                <div class="rc-block" style="display:flex; flex-direction:column; gap:1.5rem;">
+                    <div class="vpf-form" id="rc-depletion-chart-container" style="display:none;">
+                        <div class="goal-title">Corpus Depletion Over Retirement</div>
+                        <div class="chart-wrapper" style="height:280px;">
+                            <canvas id="rc-depletion-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Right Block: Bottom - Risk Appetite & SIP Strategy -->
                     <div class="vpf-form">
+                        <div class="vpf-info">
+                            <p><strong>Note:</strong> Select your risk appetite to find out how much monthly investments needed to achieve the retirement corpus. Recommendation is as per standard investment strategy and historical returns. This is not an investment advice.</p>
+                        </div>
                         <div class="vpf-field risk-field">
                             <label class="risk-label">Risk Appetite</label>
                             <select id="rc-risk" class="risk-select" onchange="calcSIPStrategy()">
@@ -827,11 +736,11 @@
 
                     <div class="vpf-form">
                         <div class="vpf-field">
-                            <label>Existing EPF Balance (₹)</label>
+                            <label>Existing EPF Balance (&#8377;)</label>
                             <input type="number" id="epf-existing" step="1" min="0" placeholder="Enter current EPF balance">
                         </div>
                         <div class="vpf-field">
-                            <label>Basic Monthly Salary (₹)</label>
+                            <label>Basic Monthly Salary (&#8377;)</label>
                             <input type="number" id="epf-basic" step="1" min="0" placeholder="Enter monthly basic salary">
                         </div>
                         <div class="vpf-field">
@@ -931,7 +840,7 @@
                 <div class="rc-block">
                     <div class="vpf-form">
                         <div class="vpf-field">
-                            <label>Total Loan Amount (₹)</label>
+                            <label>Total Loan Amount (&#8377;)</label>
                             <input type="number" id="hl-amount" step="1" min="0" placeholder="Enter loan amount">
                         </div>
                         <div class="vpf-field">
@@ -987,15 +896,78 @@
                 </div>
             </div>
         </div>
+
+        <!-- Inflated Value Calculator Page -->
+        <div class="page" id="inflated-value">
+            <h2 class="section-title">Inflated Value Calculator</h2>
+
+            <div class="rc-layout">
+                <div class="rc-block">
+                    <div class="vpf-info">
+                        <p><strong>Note:</strong> Find out how much your today's money is worth in the future with inflation.</p>
+                    </div>
+
+                    <div class="vpf-form">
+                        <div class="vpf-field">
+                            <label>Current Value (₹)</label>
+                            <input type="number" id="iv-current-value" step="1" min="0" placeholder="Enter current value in rupees">
+                        </div>
+                        <div class="vpf-field">
+                            <label>Inflation (%)</label>
+                            <input type="number" id="iv-inflation" step="1" min="0" max="100" placeholder="Enter inflation %">
+                            <div class="field-info"><strong>Considering yearly inflation</strong></div>
+                        </div>
+                        <div class="vpf-field">
+                            <label>Time Period (In Years)</label>
+                            <input type="number" id="iv-years" step="1" min="1" max="100" placeholder="Enter time period in years">
+                        </div>
+
+                        <div class="epf-btn-bar">
+                            <button class="btn-calculate" onclick="calcInflatedValue()">Calculate</button>
+                            <button class="btn-reset" onclick="resetInflatedValue()">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rc-block">
+                    <div id="iv-results-panel" style="display:none;">
+                        <div class="vpf-form">
+                            <div class="goal-title">Result</div>
+                            <table class="vpf-table">
+                                <tr>
+                                    <td>Current Value</td>
+                                    <td id="iv-display-current">-</td>
+                                </tr>
+                                <tr>
+                                    <td>Inflation Rate</td>
+                                    <td id="iv-display-inflation">-</td>
+                                </tr>
+                                <tr>
+                                    <td>Time Period</td>
+                                    <td id="iv-display-years">-</td>
+                                </tr>
+                                <tr class="vpf-highlight">
+                                    <td><strong>Inflated Value</strong></td>
+                                    <td id="iv-final-value"><strong>-</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
         function showPage(pageId, navEl) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('.navbar a').forEach(a => a.classList.remove('active-nav'));
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active-nav'));
             if (navEl) navEl.classList.add('active-nav');
         }
+
+        let goals = [];
+        let goalCharts = {};
 
         function createRowHTML(seq, data) {
             const assetVal = data ? data.asset : '';
@@ -1010,7 +982,8 @@
             const isCustomAsset = assetVal && !['Equity', 'Debt', 'Gold', 'Global', 'Others'].includes(assetVal);
 
             const amount = parseFloat(amountVal) || 0;
-            const yearly = amount * 12;
+            const freqMultiplier = freqVal === 'Monthly' ? 12 : freqVal === 'Quarterly' ? 4 : freqVal === 'Half Year' ? 2 : freqVal === 'Yearly' ? 1 : 12;
+            const yearly = amount * freqMultiplier;
             const yearlyDisplay = yearly > 0 ? '₹ ' + yearly.toFixed(2) : '';
 
             return `
@@ -1097,6 +1070,7 @@
 
         function getTableData(tbodyId) {
             const tbody = document.getElementById(tbodyId);
+            if (!tbody) return [];
             const data = [];
             for (const row of tbody.rows) {
                 const cells = row.cells;
@@ -1125,20 +1099,21 @@
         }
 
         function updateTotals() {
-            const retTotals = calcTotals('retirement-tbody');
-            document.getElementById('retirement-total').textContent = '₹ ' + retTotals.amount.toFixed(2);
-            document.getElementById('retirement-yearly-total').textContent = retTotals.yearly > 0 ? '₹ ' + retTotals.yearly.toFixed(2) : '';
-            document.getElementById('retirement-cr-total').textContent = retTotals.cr > 0 ? retTotals.cr.toFixed(4) : '';
-
-            const eduTotals = calcTotals('education-tbody');
-            document.getElementById('education-total').textContent = '₹ ' + eduTotals.amount.toFixed(2);
-            document.getElementById('education-yearly-total').textContent = eduTotals.yearly > 0 ? '₹ ' + eduTotals.yearly.toFixed(2) : '';
-            document.getElementById('education-cr-total').textContent = eduTotals.cr > 0 ? eduTotals.cr.toFixed(4) : '';
+            goals.forEach(goal => {
+                const totals = calcTotals(goal.id + '-tbody');
+                const totalEl = document.getElementById(goal.id + '-total');
+                const yearlyEl = document.getElementById(goal.id + '-yearly-total');
+                const crEl = document.getElementById(goal.id + '-cr-total');
+                if (totalEl) totalEl.textContent = '₹ ' + totals.amount.toFixed(2);
+                if (yearlyEl) yearlyEl.textContent = totals.yearly > 0 ? '₹ ' + totals.yearly.toFixed(2) : '';
+                if (crEl) crEl.textContent = totals.cr > 0 ? totals.cr.toFixed(4) : '';
+            });
         }
 
         function calcTotals(tbodyId) {
             const tbody = document.getElementById(tbodyId);
             let amount = 0, yearly = 0, cr = 0;
+            if (!tbody) return { amount, yearly, cr };
             for (const row of tbody.rows) {
                 const val = parseFloat(row.cells[2].querySelector('input').value);
                 if (!isNaN(val)) amount += val;
@@ -1157,7 +1132,9 @@
         function recalcRow(row) {
             const cells = row.cells;
             const amount = parseFloat(cells[2].querySelector('input').value) || 0;
-            const yearly = amount * 12;
+            const freq = cells[4].querySelector('select').value;
+            const freqMultiplier = freq === 'Monthly' ? 12 : freq === 'Quarterly' ? 4 : freq === 'Half Year' ? 2 : freq === 'Yearly' ? 1 : 12;
+            const yearly = amount * freqMultiplier;
             cells[6].querySelector('.calculated-field').textContent = yearly > 0 ? '₹ ' + yearly.toFixed(2) : '';
 
             const returns = parseFloat(cells[7].querySelector('input').value) || 0;
@@ -1186,21 +1163,167 @@
         }
 
         function recalcAllRows() {
-            const retRows = document.getElementById('retirement-tbody').rows;
-            for (const row of retRows) recalcRow(row);
-            const eduRows = document.getElementById('education-tbody').rows;
-            for (const row of eduRows) recalcRow(row);
+            goals.forEach(goal => {
+                const tbody = document.getElementById(goal.id + '-tbody');
+                if (tbody) {
+                    for (const row of tbody.rows) recalcRow(row);
+                }
+            });
         }
 
         function saveData() {
             recalcAllRows();
-            const data = {
-                retirement: getTableData('retirement-tbody'),
-                education: getTableData('education-tbody')
-            };
+            const data = { goals: [] };
+            goals.forEach(goal => {
+                data.goals.push({
+                    id: goal.id,
+                    name: goal.name,
+                    rows: getTableData(goal.id + '-tbody')
+                });
+            });
             localStorage.setItem('km_finance_data', JSON.stringify(data));
             updateTotals();
             updateCharts();
+        }
+
+        function generateGoalId(name) {
+            return 'goal-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+        }
+
+        function renderGoalHTML(goal) {
+            return `
+                <div class="goal-section" id="${goal.id}-section">
+                    <div class="goal-title" style="display:flex; align-items:center; justify-content:space-between;">
+                        <span>Financial Goal: ${goal.name}</span>
+                        <button class="btn-delete-row" onclick="deleteGoal('${goal.id}')" title="Delete goal">&times;</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="${goal.id}-table">
+                            <colgroup>
+                                <col class="col-seq">
+                                <col class="col-asset">
+                                <col class="col-amount">
+                                <col class="col-method">
+                                <col class="col-freq">
+                                <col class="col-instrument">
+                                <col class="col-yearly">
+                                <col class="col-returns">
+                                <col class="col-stepup">
+                                <col class="col-horizon">
+                                <col class="col-total-cr">
+                                <col class="col-action">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Seq</th>
+                                    <th>Asset Class</th>
+                                    <th>Amount (INR)</th>
+                                    <th>Method</th>
+                                    <th>Frequency</th>
+                                    <th>Instrument</th>
+                                    <th>Yearly Contribution</th>
+                                    <th>Post Tax Returns%</th>
+                                    <th>Step Up%</th>
+                                    <th>Horizon (Yrs)</th>
+                                    <th>Total in CR</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="${goal.id}-tbody">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td><strong>Total</strong></td>
+                                    <td><strong id="${goal.id}-total">₹ 0.00</strong></td>
+                                    <td colspan="3"></td>
+                                    <td><strong id="${goal.id}-yearly-total"></strong></td>
+                                    <td colspan="3"></td>
+                                    <td><strong id="${goal.id}-cr-total"></strong></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <button class="btn-add-row" onclick="addRow('${goal.id}-tbody')">+ Add Row</button>
+                </div>
+                <div class="block-empty chart-block">
+                    <div class="goal-title">${goal.name} - Asset Allocation</div>
+                    <div class="chart-wrapper">
+                        <canvas id="${goal.id}-chart"></canvas>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAllGoals() {
+            const container = document.getElementById('goals-container');
+            container.innerHTML = '';
+            goals.forEach(goal => {
+                container.innerHTML += renderGoalHTML(goal);
+            });
+        }
+
+        function populateGoalRows(goal, rows) {
+            const tbody = document.getElementById(goal.id + '-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            const rowData = rows && rows.length > 0 ? rows : [null];
+            rowData.forEach((rd, i) => {
+                const row = document.createElement('tr');
+                row.innerHTML = createRowHTML(i + 1, rd);
+                tbody.appendChild(row);
+            });
+        }
+
+        function addNewGoal() {
+            const name = prompt('Enter the financial goal name:');
+            if (!name || name.trim() === '') return;
+            const id = generateGoalId(name.trim());
+            if (goals.find(g => g.id === id)) {
+                alert('A goal with a similar name already exists.');
+                return;
+            }
+            const goal = { id: id, name: name.trim() };
+            goals.push(goal);
+            renderAllGoals();
+            goals.forEach(g => {
+                const saved = getSavedGoalRows(g.id);
+                populateGoalRows(g, saved);
+            });
+            recalcAllRows();
+            updateTotals();
+            updateCharts();
+            saveData();
+        }
+
+        function deleteGoal(goalId) {
+            if (!confirm('Are you sure you want to delete this financial goal?')) return;
+            goals = goals.filter(g => g.id !== goalId);
+            if (goalCharts[goalId]) {
+                goalCharts[goalId].destroy();
+                delete goalCharts[goalId];
+            }
+            renderAllGoals();
+            goals.forEach(g => {
+                const saved = getSavedGoalRows(g.id);
+                populateGoalRows(g, saved);
+            });
+            recalcAllRows();
+            updateTotals();
+            updateCharts();
+            saveData();
+        }
+
+        function getSavedGoalRows(goalId) {
+            const saved = localStorage.getItem('km_finance_data');
+            if (!saved) return null;
+            const data = JSON.parse(saved);
+            if (data.goals) {
+                const g = data.goals.find(x => x.id === goalId);
+                return g ? g.rows : null;
+            }
+            return null;
         }
 
         function loadData() {
@@ -1210,30 +1333,36 @@
                 data = JSON.parse(saved);
             }
 
-            const retirementData = data && data.retirement && data.retirement.length > 0 ? data.retirement : [null];
-            const educationData = data && data.education && data.education.length > 0 ? data.education : [null];
+            // Migration: convert old format to new
+            if (data && !data.goals) {
+                const migrated = { goals: [] };
+                if (data.retirement && data.retirement.length > 0) {
+                    migrated.goals.push({ id: 'goal-retirement', name: 'Retirement', rows: data.retirement });
+                }
+                if (data.education && data.education.length > 0) {
+                    migrated.goals.push({ id: 'goal-childs-education', name: "Child's Education", rows: data.education });
+                }
+                data = migrated;
+                localStorage.setItem('km_finance_data', JSON.stringify(data));
+            }
 
-            const retTbody = document.getElementById('retirement-tbody');
-            retTbody.innerHTML = '';
-            retirementData.forEach((rowData, i) => {
-                const row = document.createElement('tr');
-                row.innerHTML = createRowHTML(i + 1, rowData);
-                retTbody.appendChild(row);
-            });
+            if (data && data.goals && data.goals.length > 0) {
+                goals = data.goals.map(g => ({ id: g.id, name: g.name }));
+            } else {
+                goals = [
+                    { id: 'goal-retirement', name: 'Retirement' },
+                    { id: 'goal-childs-education', name: "Child's Education" }
+                ];
+            }
 
-            const eduTbody = document.getElementById('education-tbody');
-            eduTbody.innerHTML = '';
-            educationData.forEach((rowData, i) => {
-                const row = document.createElement('tr');
-                row.innerHTML = createRowHTML(i + 1, rowData);
-                eduTbody.appendChild(row);
+            renderAllGoals();
+            goals.forEach(goal => {
+                const rows = data && data.goals ? (data.goals.find(g => g.id === goal.id) || {}).rows : null;
+                populateGoalRows(goal, rows);
             });
         }
 
         Chart.register(ChartDataLabels);
-
-        let retirementChart = null;
-        let educationChart = null;
 
         const chartColors = {
             'Equity': '#4e79a7',
@@ -1245,6 +1374,7 @@
 
         function getAssetAllocation(tbodyId) {
             const tbody = document.getElementById(tbodyId);
+            if (!tbody) return {};
             const allocation = {};
             for (const row of tbody.rows) {
                 const wrapper = row.cells[1].querySelector('.asset-class-wrapper');
@@ -1275,7 +1405,9 @@
                 return chartColors[label] || `hsl(${(i * 60 + 200) % 360}, 60%, 55%)`;
             });
 
-            const ctx = document.getElementById(canvasId).getContext('2d');
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return null;
+            const ctx = canvas.getContext('2d');
 
             if (chartRef) {
                 chartRef.destroy();
@@ -1327,8 +1459,9 @@
         }
 
         function updateCharts() {
-            retirementChart = renderChart('retirement-chart', retirementChart, 'retirement-tbody');
-            educationChart = renderChart('education-chart', educationChart, 'education-tbody');
+            goals.forEach(goal => {
+                goalCharts[goal.id] = renderChart(goal.id + '-chart', goalCharts[goal.id] || null, goal.id + '-tbody');
+            });
         }
 
         const riskProfiles = {
@@ -1414,31 +1547,132 @@
             resultsDiv.style.display = 'block';
         }
 
+        let rcDepletionChart = null;
+
         function calcCorpus() {
             const age = parseFloat(document.getElementById('rc-age').value) || 0;
             const yearlyExpense = parseFloat(document.getElementById('rc-expense').value) || 0;
             const retireAge = parseFloat(document.getElementById('rc-retire-age').value) || 0;
             const inflation = parseFloat(document.getElementById('rc-inflation').value) || 0;
+            const lifeExpInput = document.getElementById('rc-life-expectancy');
+            let lifeExp = parseFloat(lifeExpInput.value) || 0;
             const results = document.getElementById('rc-results');
+            const chartContainer = document.getElementById('rc-depletion-chart-container');
 
-            if (age <= 0 || yearlyExpense <= 0 || retireAge <= 0 || retireAge <= age) {
+            if (age <= 0 || yearlyExpense <= 0 || retireAge <= 0 || retireAge <= age || lifeExp <= retireAge || lifeExp > 100) {
                 results.style.display = 'none';
+                chartContainer.style.display = 'none';
                 return;
             }
 
             results.style.display = 'block';
 
             const yearsToRetire = retireAge - age;
+            const retirementYears = lifeExp - retireAge;
             const inflationRate = inflation / 100;
             const inflatedAnnual = yearlyExpense * Math.pow(1 + inflationRate, yearsToRetire);
-            const corpus = inflatedAnnual * 25;
+
+            // Calculate corpus: sum of present values of each year's withdrawal
+            // Each year withdrawal grows by inflation, corpus earns no return (conservative: fully depleted)
+            // Corpus = sum of inflatedAnnual * (1+inflation)^(yr-1) for yr=1..retirementYears
+            // This is a geometric series
+            let corpus = 0;
+            for (let yr = 0; yr < retirementYears; yr++) {
+                corpus += inflatedAnnual * Math.pow(1 + inflationRate, yr);
+            }
 
             document.getElementById('rc-years').textContent = yearsToRetire + ' years';
+            document.getElementById('rc-retirement-years').textContent = retirementYears + ' years (age ' + retireAge + ' to ' + lifeExp + ')';
             document.getElementById('rc-current-expense').textContent = '₹ ' + yearlyExpense.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('rc-inflated-annual').textContent = '₹ ' + inflatedAnnual.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('rc-corpus').textContent = '₹ ' + corpus.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (' + (corpus / 10000000).toFixed(2) + ' Cr)';
 
+            // Depletion chart
+            chartContainer.style.display = 'block';
+            renderDepletionChart(corpus, inflatedAnnual, inflationRate, retirementYears, retireAge);
+
             calcSIPStrategy();
+        }
+
+        function resetCorpus() {
+            document.getElementById('rc-age').value = '';
+            document.getElementById('rc-expense').value = '';
+            document.getElementById('rc-retire-age').value = '';
+            document.getElementById('rc-inflation').value = '';
+            document.getElementById('rc-life-expectancy').value = '';
+            document.getElementById('rc-results').style.display = 'none';
+            document.getElementById('rc-depletion-chart-container').style.display = 'none';
+            document.getElementById('rc-risk').selectedIndex = 0;
+            document.getElementById('rc-strategy-results').style.display = 'none';
+            if (rcDepletionChart) { rcDepletionChart.destroy(); rcDepletionChart = null; }
+        }
+
+        function renderDepletionChart(corpus, firstYearExpense, inflationRate, retirementYears, retireAge) {
+            const labels = [];
+            const corpusData = [];
+            const withdrawalData = [];
+            let remaining = corpus;
+
+            for (let yr = 0; yr <= retirementYears; yr++) {
+                labels.push('Age ' + (retireAge + yr));
+                corpusData.push(parseFloat((remaining / 10000000).toFixed(4)));
+                if (yr < retirementYears) {
+                    const withdrawal = firstYearExpense * Math.pow(1 + inflationRate, yr);
+                    withdrawalData.push(parseFloat((withdrawal / 10000000).toFixed(4)));
+                    remaining -= withdrawal;
+                } else {
+                    withdrawalData.push(0);
+                }
+            }
+
+            if (rcDepletionChart) rcDepletionChart.destroy();
+            const ctx = document.getElementById('rc-depletion-chart').getContext('2d');
+            rcDepletionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Remaining Corpus (₹ Cr)',
+                            data: corpusData,
+                            borderColor: '#4e79a7',
+                            backgroundColor: 'rgba(78, 121, 167, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2
+                        },
+                        {
+                            label: 'Annual Withdrawal (₹ Cr)',
+                            data: withdrawalData,
+                            borderColor: '#e15759',
+                            backgroundColor: 'rgba(225, 87, 89, 0.1)',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { size: 11 } } },
+                        datalabels: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: '₹ Crores' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Age' },
+                            ticks: {
+                                maxTicksLimit: 15
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         let epfPieChart = null;
@@ -1516,7 +1750,6 @@
             document.getElementById('epf-contrib-fv').textContent = '₹ ' + contribCorpus.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (' + (contribCorpus / 10000000).toFixed(2) + ' Cr)';
             document.getElementById('epf-total-corpus').innerHTML = '<strong>₹ ' + totalCorpus.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' (' + (totalCorpus / 10000000).toFixed(2) + ' Cr)</strong>';
 
-            // Pie Chart: Corpus breakdown
             if (epfPieChart) epfPieChart.destroy();
             const pieCtx = document.getElementById('epf-pie-chart').getContext('2d');
             epfPieChart = new Chart(pieCtx, {
@@ -1547,7 +1780,6 @@
                 }
             });
 
-            // Bar Chart: Year-wise growth
             if (epfBarChart) epfBarChart.destroy();
             const barCtx = document.getElementById('epf-bar-chart').getContext('2d');
             const labels = [];
@@ -1619,7 +1851,6 @@
             const monthlyRate = annualRate / 100 / 12;
             const totalMonths = tenureYears * 12;
 
-            // EMI = P * r * (1+r)^n / ((1+r)^n - 1)
             const emi = loanAmount * monthlyRate * Math.pow(1 + monthlyRate, totalMonths) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
             const totalAmount = emi * totalMonths;
             const totalInterest = totalAmount - loanAmount;
@@ -1629,7 +1860,6 @@
             document.getElementById('hl-interest').textContent = '₹ ' + totalInterest.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('hl-total').innerHTML = '<strong>₹ ' + totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</strong>';
 
-            // Pie chart
             if (hlPieChart) hlPieChart.destroy();
             const ctx = document.getElementById('hl-pie-chart').getContext('2d');
             hlPieChart = new Chart(ctx, {
@@ -1706,10 +1936,14 @@
         }
 
         function exportData() {
-            const data = {
-                retirement: getTableData('retirement-tbody'),
-                education: getTableData('education-tbody')
-            };
+            const data = { goals: [] };
+            goals.forEach(goal => {
+                data.goals.push({
+                    id: goal.id,
+                    name: goal.name,
+                    rows: getTableData(goal.id + '-tbody')
+                });
+            });
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1726,9 +1960,10 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if (data.retirement || data.education) {
+                    if (data.goals || data.retirement || data.education) {
                         localStorage.setItem('km_finance_data', JSON.stringify(data));
                         loadData();
+                        recalcAllRows();
                         updateTotals();
                         updateCharts();
                         alert('Data imported successfully!');
@@ -1741,6 +1976,34 @@
             };
             reader.readAsText(file);
             event.target.value = '';
+        }
+
+        function calcInflatedValue() {
+            const currentValue = parseFloat(document.getElementById('iv-current-value').value) || 0;
+            const inflation = parseFloat(document.getElementById('iv-inflation').value) || 0;
+            const years = parseFloat(document.getElementById('iv-years').value) || 0;
+            const results = document.getElementById('iv-results-panel');
+
+            if (currentValue <= 0 || inflation <= 0 || years <= 0) {
+                results.style.display = 'none';
+                return;
+            }
+
+            results.style.display = 'block';
+
+            const inflatedValue = currentValue * Math.pow(1 + inflation / 100, years);
+
+            document.getElementById('iv-display-current').textContent = '₹ ' + currentValue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('iv-display-inflation').textContent = inflation + '%';
+            document.getElementById('iv-display-years').textContent = years + ' years';
+            document.getElementById('iv-final-value').innerHTML = '<strong>₹ ' + inflatedValue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</strong>';
+        }
+
+        function resetInflatedValue() {
+            document.getElementById('iv-current-value').value = '';
+            document.getElementById('iv-inflation').value = '';
+            document.getElementById('iv-years').value = '';
+            document.getElementById('iv-results-panel').style.display = 'none';
         }
 
         loadData();
